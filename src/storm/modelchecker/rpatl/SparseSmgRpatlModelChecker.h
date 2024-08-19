@@ -14,6 +14,7 @@ class SparseSmgRpatlModelChecker : public SparsePropositionalModelChecker<Sparse
    public:
     typedef typename SparseSmgModelType::ValueType ValueType;
     typedef typename SparseSmgModelType::RewardModelType RewardModelType;
+    using SolutionType = typename std::conditional<std::is_same_v<ValueType, storm::Interval>, double, ValueType>::type;
 
     explicit SparseSmgRpatlModelChecker(SparseSmgModelType const& model);
 
@@ -31,6 +32,9 @@ class SparseSmgRpatlModelChecker : public SparsePropositionalModelChecker<Sparse
                                                                             CheckTask<storm::logic::StateFormula, ValueType> const& checkTask) override;
     virtual std::unique_ptr<CheckResult> computeLongRunAverageRewards(
         Environment const& env, CheckTask<storm::logic::LongRunAverageRewardFormula, ValueType> const& checkTask) override;
+
+    virtual std::unique_ptr<CheckResult> computeUntilProbabilities(Environment const& env,
+                                                                   CheckTask<storm::logic::UntilFormula, ValueType> const& checkTask) override;
 };
 }  // namespace modelchecker
 }  // namespace storm
