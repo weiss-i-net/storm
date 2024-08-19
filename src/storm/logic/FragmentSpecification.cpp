@@ -75,6 +75,15 @@ FragmentSpecification rpatl() {
     rpatl.setLongRunAverageRewardFormulasAllowed(true);
     rpatl.setLongRunAverageOperatorsAllowed(true);
 
+    rpatl.setProbabilityOperatorsAllowed(true);
+    rpatl.setReachabilityProbabilityFormulasAllowed(true);
+    rpatl.setUntilFormulasAllowed(true);
+    rpatl.setQualitativeOperatorResultsAllowed(true);
+    // rpatl.setBoundedUntilFormulasAllowed(true);
+    // rpatl.setStepBoundedUntilFormulasAllowed(true);
+    // rpatl.setTimeBoundedUntilFormulasAllowed(true);
+
+
     return rpatl;
 }
 
