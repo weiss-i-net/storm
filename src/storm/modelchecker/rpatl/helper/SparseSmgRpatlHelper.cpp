@@ -20,7 +20,7 @@ storm::storage::BitVector storm::modelchecker::helper::SparseSmgRpatlHelper<Valu
     if constexpr (std::is_same_v<ValueType, storm::Interval> or std::is_same_v<ValueType, RationalNumber>) {
         STORM_LOG_THROW(false, storm::exceptions::NotSupportedException, "Intervals and RationalNumbers not supported for SMGs.");
     } else {
-        STORM_LOG_ERROR(boost::format("maximizer: %1%, target: %2%, allowed: %3%") % maximizerCoalition.size() % targetStateSet.size() % allowedStateSet.size());
+        //STORM_LOG_ERROR(boost::format("maximizer: %1%, target: %2%, allowed: %3%") % maximizerCoalition.size() % targetStateSet.size() % allowedStateSet.size());
         auto stateSet{targetStateSet};
         std::vector stack(targetStateSet.begin(), targetStateSet.end());
 
