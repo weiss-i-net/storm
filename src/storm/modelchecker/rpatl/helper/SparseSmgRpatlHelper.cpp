@@ -6,9 +6,9 @@
 
 #include <boost/format.hpp>
 
-#include "exceptions/NotSupportedException.h"
-#include "storage/BitVector.h"
-#include "storage/SparseMatrix.h"
+#include "storm/exceptions/NotSupportedException.h"
+#include "storm/storage/BitVector.h"
+#include "storm/storage/SparseMatrix.h"
 
 namespace storm::modelchecker::helper {
 

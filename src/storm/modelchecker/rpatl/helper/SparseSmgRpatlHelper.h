@@ -8,8 +8,8 @@
 // Created by Jannik Hiller on 16/08/2023.
 //
 
-#include "solver/SolveGoal.h"
-#include "storage/BitVector.h"
+#include "storm/solver/SolveGoal.h"
+#include "storm/storage/BitVector.h"
 
 namespace storm::modelchecker::helper {
 

@@ -1,10 +1,6 @@
 #pragma once
 
 #include "storm/modelchecker/propositional/SparsePropositionalModelChecker.h"
-#include "storm/models/sparse/Smg.h"
-#include "storm/solver/LinearEquationSolver.h"
-#include "storm/storage/StronglyConnectedComponent.h"
-#include "storm/utility/solver.h"
 
 namespace storm {
 namespace modelchecker {
