@@ -16,15 +16,15 @@ namespace storm::modelchecker::helper {
 template<typename ValueType, typename SolutionType = ValueType>
 class SparseSmgRpatlHelper {
    private:
-    static storm::storage::BitVector computeStrongAttractors(storm::storage::BitVector const& maximizerCoalition,
-                                                             storm::storage::SparseMatrix<ValueType> const& transitionMatrix,
-                                                             storm::storage::SparseMatrix<ValueType> const& backwardTransitions,
-                                                             storm::storage::BitVector const& targetStateSet, storm::storage::BitVector const& allowedStateSet);
+    static std::pair<storm::storage::BitVector, storm::storage::BitVector> computeStrongAttractors(storm::storage::BitVector const& maximizerCoalition,
+                                                storm::storage::SparseMatrix<ValueType> const& transitionMatrix,
+                                                storm::storage::SparseMatrix<ValueType> const& backwardTransitions,
+                                                storm::storage::BitVector const& targetStateSet, storm::storage::BitVector const& allowedStateSet, storm::storage::BitVector const& allowedTransitions);
 
     static storm::storage::BitVector computeWeakAttractors(storm::storage::BitVector const& maximizerCoalition,
-                                                           storm::storage::SparseMatrix<ValueType> const& transitionMatrix,
-                                                           storm::storage::SparseMatrix<ValueType> const& backwardTransitions,
-                                                           storm::storage::BitVector const& targetStateSet, storm::storage::BitVector const& allowedStateSet);
+                                              storm::storage::SparseMatrix<ValueType> const& transitionMatrix,
+                                              storm::storage::SparseMatrix<ValueType> const& backwardTransitions,
+                                              storm::storage::BitVector const& targetStateSet, storm::storage::BitVector const& allowedStateSet);
 
    public:
     static storm::storage::BitVector computeUntilProp1(storm::storage::BitVector const& maximizerCoalition,
