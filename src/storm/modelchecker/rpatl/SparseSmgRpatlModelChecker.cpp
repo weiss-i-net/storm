@@ -4,7 +4,6 @@
 #include <memory>
 #include <vector>
 
-#include "storm/storage/BitVector.h"
 #include "storm/adapters/RationalNumberAdapter.h"
 #include "storm/exceptions/InvalidPropertyException.h"
 #include "storm/exceptions/NotImplementedException.h"
@@ -13,6 +12,7 @@
 #include "storm/modelchecker/results/ExplicitQualitativeCheckResult.h"
 #include "storm/modelchecker/results/ExplicitQuantitativeCheckResult.h"
 #include "storm/models/sparse/StandardRewardModel.h"
+#include "storm/storage/BitVector.h"
 #include "storm/utility/FilteredRewardModel.h"
 #include "storm/utility/macros.h"
 
@@ -20,7 +20,6 @@
 #include "storm/models/sparse/Smg.h"
 
 #include "storm/adapters/RationalNumberAdapter.h"
-
 
 namespace storm::modelchecker {
 template<typename SparseSmgModelType>
@@ -82,7 +81,7 @@ std::unique_ptr<CheckResult> SparseSmgRpatlModelChecker<SparseSmgModelType>::com
                     boost::format("Quantitative rpatl is not supported. Probability threshold %1% should be either 0.0 or 1.0.") % probablilityThreshold);
 
     using helper_t = storm::modelchecker::helper::SparseSmgRpatlHelper<ValueType>;
-    const auto &model = this->getModel();
+    const auto& model = this->getModel();
 
     storm::logic::UntilFormula const& pathFormula = checkTask.getFormula();
 
@@ -111,5 +110,4 @@ std::unique_ptr<CheckResult> SparseSmgRpatlModelChecker<SparseSmgModelType>::com
 template class SparseSmgRpatlModelChecker<storm::models::sparse::Smg<double>>;
 template class SparseSmgRpatlModelChecker<storm::models::sparse::Smg<storm::RationalNumber>>;
 
-} // namespace storm::modelchecker
-
+}  // namespace storm::modelchecker

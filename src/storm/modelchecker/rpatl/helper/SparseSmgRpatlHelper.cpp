@@ -74,7 +74,6 @@ storm::modelchecker::helper::SparseSmgRpatlHelper<storm::Interval, double>::comp
     return {};
 }
 
-
 template<>
 std::pair<storm::storage::BitVector, storm::storage::BitVector>
 storm::modelchecker::helper::SparseSmgRpatlHelper<storm::RationalNumber>::computeStrongAttractors(
@@ -99,11 +98,11 @@ storm::modelchecker::helper::SparseSmgRpatlHelper<ValueType, SolutionType>::comp
     storm::storage::BitVector transitionsLeadingToAttractors(transitionMatrix.getRowCount());
     storm::storage::BitVector workingStateSet{targetStateSet};
 
-    //STORM_PRINT("matrix: " << transitionMatrix << "\n");
+    STORM_LOG_TRACE("matrix: " << transitionMatrix << "\n");
 
     while (not workingStateSet.empty()) {
-        //STORM_PRINT("attractors: " << strongAttractors << "\n");
-        //STORM_PRINT("working: " << workingStateSet << "\n");
+        STORM_LOG_TRACE("attractors: " << strongAttractors << "\n");
+        STORM_LOG_TRACE("working: " << workingStateSet << "\n");
 
         auto predecessorStateView =
             workingStateSet |
@@ -117,7 +116,7 @@ storm::modelchecker::helper::SparseSmgRpatlHelper<ValueType, SolutionType>::comp
         for (auto const index : predecessorStateView) {
             predecessorStates.set(index);
         };
-        //STORM_PRINT("predecessors: " << predecessorStates << "\n");
+        STORM_LOG_TRACE("predecessors: " << predecessorStates << "\n");
 
         auto transitionLeadsToAttractors = [&](auto const index) {
             return std::ranges::any_of(transitionMatrix.getRow(index), [&](auto const entry) { return strongAttractors.get(entry.getColumn()); });
@@ -131,7 +130,7 @@ storm::modelchecker::helper::SparseSmgRpatlHelper<ValueType, SolutionType>::comp
         for (auto const index : transitionIndexView) {
             transitionsLeadingToAttractors.set(index);
         }
-        //STORM_PRINT("transitions: " << transitionsLeadingToAttractors << "\n\n");
+        STORM_LOG_TRACE("transitions: " << transitionsLeadingToAttractors << "\n\n");
 
         auto isGoodState = [&](auto const stateIndex) {
             auto isUsed = [&](auto const rowIndex) { return transitionsLeadingToAttractors.get(rowIndex); };
@@ -142,9 +141,7 @@ storm::modelchecker::helper::SparseSmgRpatlHelper<ValueType, SolutionType>::comp
                 return std::ranges::all_of(outGoingTransitions, isUsed);
             }
         };
-        auto notAlreadyAttractor = [&](auto const index) {
-            return not strongAttractors.get(index);
-        };
+        auto notAlreadyAttractor = [&](auto const index) { return not strongAttractors.get(index); };
 
         predecessorStates &= allowedStateSet;
         workingStateSet.clear();
@@ -162,18 +159,25 @@ storm::storage::BitVector storm::modelchecker::helper::SparseSmgRpatlHelper<Valu
     storm::storage::BitVector const& maximizerCoalition, storm::storage::SparseMatrix<ValueType> const& transitionMatrix,
     storm::storage::SparseMatrix<ValueType> const& backwardTransitions, storm::storage::BitVector const& targetStateSet,
     storm::storage::BitVector const& allowedStateSet) {
+    STORM_LOG_TRACE("Computing weak attractors...\n");
     auto currentStateSet{targetStateSet};
-    storm::storage::BitVector currentTransitions(transitionMatrix.getRowCount());
-    auto [nextStateSet, nextTransitions] =
-        computeStrongAttractors(maximizerCoalition, transitionMatrix, backwardTransitions, targetStateSet, allowedStateSet, ~currentTransitions);
+    auto [nextStateSet, nextTransitions] = computeStrongAttractors(maximizerCoalition, transitionMatrix, backwardTransitions, targetStateSet, allowedStateSet,
+                                                                   storm::storage::BitVector(transitionMatrix.getRowCount(), true));
 
+    int iterations = 0;
     while (currentStateSet != nextStateSet) {
+        iterations += 1;
+        STORM_LOG_TRACE("S_i = " << nextStateSet << " " << nextTransitions << '\n');
         currentStateSet = std::move(nextStateSet);
-        auto [badStateSet, badTransitions] = computeStrongAttractors(~maximizerCoalition, transitionMatrix, backwardTransitions, ~currentStateSet,
-                                                                     allowedStateSet & ~targetStateSet, ~currentTransitions);
+        auto [badStateSet, badTransitions] =
+            computeStrongAttractors(~maximizerCoalition, transitionMatrix, backwardTransitions, ~currentStateSet, allowedStateSet & ~targetStateSet,
+                                    storm::storage::BitVector(transitionMatrix.getRowCount(), true));
+        STORM_LOG_TRACE("C_i = " << badStateSet << " " << badTransitions << '\n');
+
         std::tie(nextStateSet, nextTransitions) =
             computeStrongAttractors(maximizerCoalition, transitionMatrix, backwardTransitions, targetStateSet, allowedStateSet & ~badStateSet, ~badTransitions);
     }
+    STORM_LOG_TRACE("Computing weak attractors took " << iterations << " iterations\n");
     return currentStateSet;
 }
 
